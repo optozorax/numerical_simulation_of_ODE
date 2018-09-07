@@ -1,5 +1,6 @@
 #include <fstream>
 #include "methods.h"
+#include <math.h>
 
 //-----------------------------------------------------------------------------
 void writeTable(
