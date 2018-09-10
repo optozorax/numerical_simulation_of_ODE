@@ -2,9 +2,6 @@
 
 #include <vector>
 #include <functional>
-#include <iomanip>
-const int _PRECISION_ = 5;
-
 
 typedef std::function<double(double, double)> DE_F;
 typedef std::function<double(double)> DE_Solve;

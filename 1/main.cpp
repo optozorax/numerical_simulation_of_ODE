@@ -1,5 +1,8 @@
 #include <fstream>
 #include "methods.h"
+#include <iomanip>
+#include <math.h>
+const int _PRECISION_ = 5;
 
 //-----------------------------------------------------------------------------
 void writeTable(
