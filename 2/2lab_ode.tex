@@ -1,0 +1,197 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{geometry}
+
+\geometry{
+margin=1.5cm
+}
+
+\usepackage{indentfirst}
+
+\usepackage{arydshln}
+\usepackage[fleqn]{amsmath}
+\usepackage{esint}
+\usepackage{amssymb}
+\usepackage{mathbbol}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{rotating}
+
+\usepackage[outline]{contour}
+\contourlength{1.2pt}
+
+\usepackage{tikz}
+\usepackage{graphics}
+\usepackage{xcolor}
+
+\begin{document}
+
+\section{Условия}
+
+\subsection{Дано}
+
+$$\begin{aligned}
+&\left\{\begin{aligned}
+	&\frac{\partial v}{\partial t} = \frac{1}{m}\left[p_i S_i-p_jS_j-\nu v\right]\\
+	&\frac{\partial x}{\partial t} = v \\
+	&\frac{\partial p_i}{\partial t} = \frac{q_i - S_i v}{k}
+	\end{aligned}\right. \\
+&q_i = 10^{-3}, \quad p_j = 10^5 \\
+&x(0) = 0, \quad v(0) = 0, \quad p_i(0) = 10^5
+\end{aligned}$$
+
+\subsection{Упрощение}
+
+Проинтегрируем $p_i$ по времени, избавимся от константы, используя начальные значения, и получим это:
+
+$$ p_i = \frac{q_i t - S_i x}{k} + 10^5 $$
+
+Тогда подставим это в первое уравнение и получим:
+
+$$\left\{\begin{aligned}
+&\frac{\partial v}{\partial t} = \frac{1}{m}\left[\frac{q_it-S_ix}{k}S_i + 10^5 S_i -p_jS_j-\nu v\right]\\
+&\frac{\partial x}{\partial t} = v \\
+&p_i = \frac{q_i t - S_i x}{k} + 10^5
+\end{aligned}\right.$$
+
+Последовательностью преобразований упростим дифференциальное уравнение со скоростью:
+
+$$\begin{aligned}
+&\frac{\partial v}{\partial t} = \frac{1}{m}\left[\frac{q_it-S_ix}{k}S_i + 10^5 S_i -p_jS_j-\nu v\right] \\
+&\frac{\partial v}{\partial t} = t\underbrace{\frac{q_i S_i}{m k}}_a - x\underbrace{\frac{S_i^2}{m k}}_b - v\underbrace{\frac{\nu}{m}}_c - \underbrace{\frac{p_j S_j-10^5 S_i}{m}}_d \\
+&\frac{\partial v}{\partial t} = t a - x b - v c - d
+\end{aligned}$$
+
+Тогда изначальная система уравнений сводится к этому:
+
+$$\left\{\begin{aligned}
+&a = \frac{q_i S_i}{m k}, \quad b = \frac{S_i^2}{m k}, \quad c = \frac{\nu}{m}, \quad d = \frac{p_j S_j-10^5 S_i}{m} \\
+&\frac{\partial v}{\partial t} = t a - x b - v c - d \\
+&\frac{\partial x}{\partial t} = v \\
+&p_i = \frac{q_i t - S_i x}{k} + 10^5
+\end{aligned}\right.$$
+
+\section{Численное решение}
+
+\subsection{Адаптация для численных методов}
+
+Так как для решения ОДУ используются предыдущие $y_n$ и текущее значение $y_{n+1}$, то введем такие обозначения для упрощения формул:
+
+$$\begin{aligned}
+&t = t_n, \quad &&t_1 = t_{n+1} = t + h \\
+&y = y_n = y(t_n), \quad &&y_1 = y_{n+1} = y(t_{n+1})
+\end{aligned}$$
+
+В конкретно нашем случае обозначения будут такие:
+
+$$\begin{aligned}
+&t = t_n, \quad &&t_1 = t_{n+1} \\
+&v = v_n = v(t_n), \quad &&v_1 = v_{n+1} = v(t_{n+1}) \\
+&x = x_n = x(t_n), \quad &&x_1 = x_{n+1} = x(t_{n+1})
+\end{aligned}$$
+
+Методы численного решения ОДУ у нас описаны для уравнений вида $y' = f(t, y)$, тогда приведем условия к этому виду: 
+
+$$\begin{aligned}
+&v' = f_v(t, v) \\
+&f_v(t, v) = t a - x(t) b - v c - d \\ \\
+&x' = f_x(t, x) \\
+&f_x(t, x) = v(t)
+\end{aligned}$$
+
+\subsection{Явный метод Эйлера}
+
+Явный метод Эйлера реализуется таким образом:
+
+$$\begin{aligned}
+&\frac{\partial y}{\partial t} = f(t, y) \\
+&y_{n+1} = y_n + h f(t_n, y_n)
+\end{aligned}$$
+
+Тогда формулы для нахождения $v_1$ и $x_1$ согласно этому методу будут такие:
+
+$$\begin{aligned}
+&v_1 = v + h f_v(t, v) = v + h \underbrace{(t a - x b - v c - d)}_y \\
+&x_1 = x + h f_x(t, x) = x + h v
+\end{aligned}$$
+
+Эти формулы могут быть легко использованы в программе для нахождения следующего значения:
+
+$$\left\{\begin{aligned}
+&a = \frac{q_i S_i}{m k},\quad b = \frac{S_i^2}{m k},\quad c = \frac{\nu}{m},\quad d = \frac{p_j S_j-10^5 S_i}{m} \\
+&y = t a - x b - v c - d \\
+&v_1 = v + h y \\
+&x_1 = x + h v \\
+&p_1 = \frac{q_i t_1 - S_i x_1}{k}
+\end{aligned}\right.$$
+
+\subsection{Модифицированный метод Эйлера}
+
+Модифицированный метод Эйлера реализуется таким образом:
+
+$$\begin{aligned}
+&\frac{\partial y}{\partial t} = f(t, y) \\
+&y_{n+1} = y_n + \frac{h}{2}\left[f(t_n, y_n) + f(t_{n+1}, y_n+h f(t_n, y_n))\right]
+\end{aligned}$$
+
+Тогда формулы для нахождения $v_1$ и $x_1$ согласно этому методу будут такие:
+
+$$\begin{aligned}
+&v_1 = v + \frac{h}{2}\left[f_v(t, v) + f_v(t_1, v+h f_v(t, v))\right] \\
+&x_1 = x + \frac{h}{2}\left[f_x(t, x) + f_x(t_1, x+h f_x(t, x))\right]
+\end{aligned}$$
+
+Подставляем функцию $f_v$ сначала в формулу для нахождения $v_1$:
+
+$$\begin{aligned}
+&v_1 = v + \frac{h}{2}\left[f_v(t, v) + f_v(t_1, v+h f_v(t, v))\right] \\
+&v_1 = v + \frac{h}{2}\left[\underbrace{(t a - x b - v c - d)}_y + f_v(t_1, v+h\underbrace{(t a - x b - v c - d)}_y)\right] \\
+&v_1 = v + \frac{h}{2}\left[y + (t_1 a - x_1 b - (v + h y)c - d))\right] \\
+\end{aligned}$$
+
+Аналогично поступаем с $x_1$:
+
+$$\begin{aligned}
+&x_1 = x + \frac{h}{2}\left[f_x(t, x) + f_x(t_1, x+h f_x(t, x))\right] \\
+&x_1 = x + \frac{h}{2}\left[v + f_x(t_1, x+h v)\right] \\
+&x_1 = x + \frac{h}{2}\left[v + v_1\right]
+\end{aligned}$$
+
+В итоге получаются такие формулы:
+
+$$\left\{\begin{aligned}
+&y = t a - x b - v c - d \\
+&v_1 = v + \frac{h}{2}\left[y + (t_1 a - x_1 b - (v+h y)c - d)\right] \\
+&x_1 = x + \frac{h}{2}\left[v + v_1\right]
+\end{aligned}\right.$$
+
+Но их проблема заключается в том, что $v_1$ зависит от $x_1$, а он в свою очередь зависит от $v_1$. Получается надо решить систему уравнений относительно $v_1$ и $x_1$. Воспользуемся командой в программе wxMaxima: 
+
+\begin{verbatim}
+solve([v1 = v + h/2 * (y + (t1*a - x1*b - (v + h*y)*c - d)), 
+       x1 = x + h/2 * (v + v1)], [v1, x1]);
+\end{verbatim}
+
+Программа выдала такое решение:
+
+$$\left\{\begin{aligned}
+&\mathit{v_1}=-\frac{\left( 2c\,{{h}^{2}}-2h\right) y+h\,\left( 2bx+2d\right) +\left( b\,{{h}^{2}}+2ch-4\right) v-2ah\,\mathit{t_1}}{b\,{{h}^{2}}+4}, \\
+&\mathit{x_1}=-\frac{\left( c\,{{h}^{3}}-{{h}^{2}}\right) y-4x+\left( c\,{{h}^{2}}-4h\right) v-a\,{{h}^{2}}\,\mathit{t_1}+d\,{{h}^{2}}}{b\,{{h}^{2}}+4}
+\end{aligned}\right.$$
+
+После небольших преобразований итоговое решение для модифицированного метода Эйлера выглядит так:
+
+$$\left\{\begin{aligned}
+&a = \frac{q_i S_i}{m k},\quad b = \frac{S_i^2}{m k},\quad c = \frac{\nu}{m},\quad d = \frac{p_j S_j-10^5 S_i}{m} \\
+&y = t a - x b - v c - d \\
+&v_1 = -\frac{2 y h(c h - 1) + 2 h(b x + d) + v(b h^2 + 2 c h - 4) - 2 a h t_1}{b h^2 + 4} \\
+&x_1 = x + \frac{h}{2}\left[v + v_1\right] \\
+&p_1 = \frac{q_i t_1 - S_i x_1}{k}
+\end{aligned}\right.$$
+
+\end{document}
