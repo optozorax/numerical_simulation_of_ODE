@@ -1,0 +1,247 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[russian]{babel}
+\usepackage{fontspec}
+\setmainfont[
+  Ligatures=TeX,
+  Extension=.otf,
+  BoldFont=cmunbx,
+  ItalicFont=cmunti,
+  BoldItalicFont=cmunbi,
+]{cmunrm}
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+
+\usepackage{geometry}
+
+\geometry{
+margin=1.5cm
+}
+
+\usepackage{indentfirst}
+
+\usepackage{arydshln}
+\usepackage[fleqn]{amsmath}
+\usepackage{xfrac}
+\usepackage{esint}
+\usepackage{amssymb}
+\usepackage{mathbbol}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{rotating}
+
+\usepackage[outline]{contour}
+\contourlength{1.2pt}
+
+\usepackage{tikz}
+\usepackage{graphics}
+\usepackage{xcolor}
+
+\usepackage[at]{easylist}
+
+\DeclareMathOperator{\sign}{sign}
+
+\begin{document}
+
+\subsection{Warning}
+
+/NOTE: Все данные предоставлены лишь в ознакомительном порядке.
+
+В формулах могут быть ошибки.
+
+
+
+
+\section{Лабораторная работа №1}
+
+\subsection{Задание}
+$ \text{Численно решить ОДУ, построив таблицы c шагом h} \in \left\{ 0.1, 0.01, 0.001 \right\} : $
+
+$ y' = 2ty $
+
+$ y(0) = 1 $
+
+$ t \in [0,1] $
+
+
+
+
+\subsection{Методы}
+\textbf{Метод Эйлера (явный)}
+
+$ y_{n+1} = y_n + h \cdot f(t_n, y_n) $
+
+\textbf{Модифицированнй метод Эйлера}
+
+$ y_{n+1} = y_n + \frac{h}{2} \cdot (f(t_n, y_n) + f(t_{n+1}, y_n + h \cdot f(t_n, y_n))) $
+
+\textbf{Метод Рунге-Кутты 4-го порядка}
+
+$ y_{n+1} = y_n + \frac{h}{6} \cdot (k_n^1 + 2k_n^2 + 2k_n^3 + k_n^4) $
+
+$ k_n^1 = f(t_n, y_n) $
+
+$ k_n^2 = f(t_n + \frac{h}{2}, y_n + \frac{h}{2} k_n^1) $
+
+$ k_n^3 = f(t_n + \frac{h}{2}, y_n + \frac{h}{2} k_n^2) $
+
+$ k_n^4 = f(t_n + \frac{h}{2}, y_n + h k_n^3) $
+
+
+
+
+
+
+
+
+\section{Лабораторная работа №2}
+
+\subsection{Задание}
+$ \text{Проинтегрировать и построить графики координаты x, скорости и давления} $
+
+$ \text{c шагом h} \in \left\{ 0.1, 0.01, 0.001 \right\} : $
+
+
+
+
+\subsection{Формулы}
+
+$ v' = \frac{1}{m}[P_i S_i - P_j S_j - \nu \cdot |V| \cdot sign V] $
+
+$ x' = v $
+
+$ P_i = \frac{q_i - S_i V}{K^{\text{Упр.}}} \> \> \> \> P_j = \frac{S_j V - q_j}{K^{\text{Упр.}}}$
+
+\subsection{Данные и начальные условия}
+
+$\text{Насос постоянного расхода: } q_i = 1 \frac{\text{м}}{\text{c}} = 10^{-3} \frac{\text{м}}{\text{c}}$
+
+$P_j = 10^5 \text{Па. (атм. давление)}$
+
+$ x(0) = 0$
+
+$ V(0) = 0$
+
+$ P(0) = 10^5 \text{Па.} $
+
+
+
+
+
+
+
+
+\section{Лабораторная работа №3}
+
+\subsection{Задание}
+
+МС - местное сопротивление
+
+ТП - трубопровод
+
+$x_1$, $x_2$ - координаты при которых происходит переключение канала.
+
+Ударник сам переключает свои каналы.
+
+
+
+
+\subsection{Метод работы перегородки}
+
+$ x(t) $
+
+$ x^k, x^{k+1}, x^{k+2}, \dots $
+
+$ x^k < x_\text{окр.} \wedge x^{k+1} > x_\text{окр.} $
+
+\noindent\begin{easylist}
+\ListProperties(Hang1=true, Start1=1)
+@ Уменьшаем $\sfrac{ht}{2}$.
+@ Мы могли попасть справа или слева $x_\text{окр.}$
+@ Уменшаем пока $x$ не окажется слева.
+@ Остановиться, когда подходим на расстояние $\Delta\delta = 10^{-6} \text{м}$, тогда $x = x_{\text{окр.}}$, $v = 0$.
+\end{easylist}
+
+
+
+
+\subsection{Основные формулы:}
+
+\noindent\begin{easylist}
+\ListProperties(Hang1=true, Start1=1)
+@ $ p' = h \Phi(q_1 - q_j,\ p,\ C,\ C_{cav}) $
+@ $ q' = h G(p_i-p_j-P_\alpha(q),\ q) $
+@ $
+\Phi(q_{ij},\ p,\ c,\ C) = \left\{
+\begin{aligned}
+&\frac{p^{\left(1+\frac{1}{\gamma}\right)}q_{ij}}{C_{cav}},  & 0 < p \leqslant p_{\text{Атм.}}\ \text{и} \ 0 < q_{ij}, \\
+& \frac{q_{ij}}{C}, & \text{иначе}
+\end{aligned}
+\right.
+$
+@ $
+P_\alpha(q) = \left\{
+\begin{aligned}
+&rq,  &Re^{mult} \cdot |q| < Re^{crt} \\
+&r_\text{\ae}|q|^\text{\ae}\sign(q), & \text{иначе}
+\end{aligned}
+\right.
+$
+@ $ G(dp,\ q) = B\sqrt{|dp|}(F\sqrt{\frac{dp}{\xi}}^3 - q) $
+\end{easylist}
+
+
+
+
+\subsection{Константы:}
+
+\noindent\begin{easylist}
+\ListProperties(Hang1=true, Start1=1)
+@ $ \mathrm{Nu} = \left\{
+\begin{aligned}
+& 10^{-6},  &\text{вода} \\
+& 3.5 \cdot 10^{-5}, &\text{масло}
+\end{aligned}
+\right. $ - число Нуссельта
+@ $ \gamma = 1.4 $
+@ $ \rho = \left\{
+\begin{aligned}
+& 997 \frac{\text{кг}}{\text{м}^3},  &\text{вода} \\
+& 905 \frac{\text{кг}}{\text{м}^3}, &\text{масло}
+\end{aligned}
+\right. $ - плотность жидкости
+@ $ E_s = \rho (\rho_{swd})^2 \approx 1260000 $ - модуль жесткости воды.
+@ $ C = \frac{V}{E_s} $
+@ $ C_{cav} = 10^{\frac5\gamma}\frac{V}{\gamma} $
+@ $ d \approx 2 \text{см} $
+@ $ \text{\ae} = 1.75 $
+@ $ Re^{crt} = 321 $ - число Рейнольдса
+@ $ Re^{mult} = \frac{dH}{\mathrm{Nu} \cdot S} $ - число Рейнольдса
+@ $ dH = \frac{4S}{\pi d} $
+@ $ B = \frac{1}{l\sqrt{2\rho}} $
+@ $ F = S\sqrt{2\rho} $
+@ $ \xi = 0.5 \cdot 0.035 \cdot 2 \cdot (\frac{1}{\mathrm{eps}(1)} - 1)^2 $
+@ $ \mathrm{eps}(x) = 0.57 + 0.043(1.1 - x) $
+@ $ r = \frac{12g\nu l}{(dH)^2 S} $
+@ $ r_\text{\ae} = \frac{0.1582 g \nu^{0.25} l}{(dH)^{1.35} S^{1.75}} $
+\end{easylist}
+
+
+
+
+\subsection{Обозначение:}
+
+\noindent\begin{easylist}
+\ListProperties(Hang1=true, Start1=1)
+@ $ V $ - объем камеры. 
+@ $ S $ - площадь сечения местного сопротивления.
+@ $ C $ - жесткость воды.
+@ $ C_{cav} $ - жесткость воды при кавитации.
+\end{easylist}
+
+\end{document}
