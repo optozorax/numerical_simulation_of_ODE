@@ -128,11 +128,11 @@ $ \text{c шагом h} \in \left\{ 0.1, 0.01, 0.001 \right\} : $
 
 \subsection{Формулы}
 
-$ v' = \frac{1}{m}[P_i S_i - P_j S_j - \nu \cdot |V| \cdot sign V] $
+$ v' = \frac{1}{m}[p_i S_i - p_j S_j - \nu \cdot |v| \cdot \sign v] $
 
 $ x' = v $
 
-$ P_i = \frac{q_i - S_i V}{K^{\text{Упр.}}} \> \> \> \> P_j = \frac{S_j V - q_j}{K^{\text{Упр.}}}$
+$ p_i' = \frac{q_i - S_i v}{K^{\text{Упр.}}},\ \quad p_j' = \frac{S_j v - q_j}{K^{\text{Упр.}}}$
 
 
 \subsection{Данные и начальные условия}
@@ -170,7 +170,7 @@ $ p' = \Phi(q_i - q_j,\ p,\ C,\ C_{cav}) $
 $
 \Phi(q_{ij},\ p,\ C,\ C_{cav}) = \left\{
 \begin{aligned}
-&\frac{p^{\left(1+\frac{1}{\gamma}\right)}q_{ij}}{C_{cav}},  & 0 < p \leqslant p_{\text{Атм.}}\ \text{и} \ 0 < q_{ij}, \\
+&\frac{p^{\left(1+\frac{1}{\gamma}\right)}q_{ij}}{C_{cav}},  & 0 < p \leqslant p_{\text{Атм.}}\ \text{и} \ q_{ij} < 0, \\
 & \frac{-q_{ij}}{C}, & \text{иначе}
 \end{aligned}
 \right.
@@ -191,7 +191,7 @@ P_\alpha(q) = \left\{
 \right.
 $
 
-$ G(dp,\ q) = B\sqrt{|dp|}\left(F\sqrt{\frac{dp}{\xi}}^3 - q\right) $
+$ G(dp,\ q) = B\sqrt{|dp|}\left(F\sqrt{\left|\frac{dp}{\xi}\right|}^3\sign(dp) - q\right) $
 
 \subsection{Простейшая схема из трубопровода и местного сопротивления}
 

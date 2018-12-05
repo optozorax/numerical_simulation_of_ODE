@@ -1,10 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 typedef std::vector<double> vec;
 
-vec operator+(const vec& a, const vec& b) {
+inline vec operator+(const vec& a, const vec& b) {
 	#ifdef _DEBUG
 	if (a.size() != b.size())
 		throw std::exception();
@@ -15,7 +16,7 @@ vec operator+(const vec& a, const vec& b) {
 	return result;
 }
 
-vec operator-(const vec& a, const vec& b) {
+inline vec operator-(const vec& a, const vec& b) {
 	#ifdef _DEBUG
 	if (a.size() != b.size())
 		throw std::exception();
@@ -26,13 +27,20 @@ vec operator-(const vec& a, const vec& b) {
 	return result;
 }
 
-vec operator*(const vec& a, double b) {
+inline vec operator*(const vec& a, double b) {
 	vec result = a;
 	for (int i = 0; i < result.size(); i++)
 		result[i] *= b;
 	return result;
 }
 
-vec operator*(double b, const vec& a) {
+inline vec operator*(double b, const vec& a) {
 	return operator*(a, b);
+}
+
+inline std::ostream& operator<<(std::ostream& out, const vec& v) {
+	for (int i = 0; i < v.size()-1; ++i)
+		out << v[i] << "\t";
+	out << v.back();
+	return out;
 }
