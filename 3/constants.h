@@ -12,7 +12,10 @@ const double w = 1;			//
 const double K_elast = 0.01;	// коэффициент упругости
 const double m = 1;			// масса поршня
 const double nu = 1;		// ню
-const double x_swap = 0.05;
+const double x_swap_r = 0.009;
+const double x_stop_r = x_swap_r + 0.001;
+const double x_swap_l = -0.001;
+const double x_stop_l = x_swap_l - 0.001;
 
 const double d = 2e-3;		//
 const double l = 5e-3;		//
