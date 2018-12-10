@@ -19,6 +19,9 @@
 margin=1.5cm
 }
 
+% Создаем команду, чтобы переносить текст на новую строку внутри таблицы
+\newcommand{\tcell}[2][l]{\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
 \usepackage{indentfirst}
 
 \usepackage{arydshln}
@@ -42,6 +45,9 @@ margin=1.5cm
 \usepackage{graphics}
 \usepackage{xcolor}
 
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
 \usepackage[at]{easylist}
 
 \DeclareMathOperator{\sign}{sign}
@@ -50,9 +56,7 @@ margin=1.5cm
 
 \subsection{Warning}
 
-\textbf{NOTE:} Все данные предоставлены лишь в ознакомительном порядке.
-
-В формулах могут быть ошибки.
+\textbf{NOTE:} этот документ предоставляется как есть и вы используете его на свой страх и риск.
 
 %-------------------------------------------------------------------------------
 
@@ -61,11 +65,7 @@ margin=1.5cm
 \subsection{Задание}
 $ \text{Численно решить ОДУ, построив таблицы c шагом h} \in \left\{ 0.1, 0.01, 0.001 \right\} : $
 
-$ y' = 2ty $
-
-$ y(0) = 1 $
-
-$ t \in [0,1] $
+$ y' = 2ty,\ \quad y(0) = 1,\ \quad t \in [0,1] $
 
 \subsection{Методы}
 
@@ -151,32 +151,59 @@ $ P(0) = 10^5\, \text{Па.} $
 
 \section{Лабораторная работа №3}
 
-\subsection{Задание}
-
-МС - местное сопротивление
-
-ТП - трубопровод
-
-$x_1$, $x_2$ - координаты при которых происходит переключение канала.
-
-Ударник сам переключает свои каналы.
-
 \subsection{Схема работы трубопровода}
 
-Справа и слева есть расход воды $q_i$ и $q_j$ соответственно, давление внутри трубы $p$ зависит от этих расходов по формулам:
+\begin{center}
+\noindent
+\begin{tikzpicture}
+	\node at (0, 0) [rectangle, minimum size=6mm, draw, label=90:$p$] (TP) {ТП};
+	\node at (-1.5, 0) [rectangle, minimum size=6mm, rounded corners=3mm, draw, label=90:$q_i$] (MC1) {};
+	\node at (1.5, 0) [rectangle, minimum size=6mm, rounded corners=3mm, draw, label=90:$q_j$] (MC2) {};
+	\draw [->] (MC1) -- (TP);
+	\draw [->] (TP) -- (MC2);
+\end{tikzpicture}
+\end{center}
 
-$ p' = \Phi(q_i - q_j,\ p,\ C,\ C_{cav}) $
+Справа и слева есть расход воды $q_i$ и $q_j$ соответственно, давление внутри трубы $p$ зависит от этих расходов по следующим формулам:
+
+$\displaystyle \frac{\partial p}{\partial t} = \Phi(q_i - q_j,\ p) $
 
 $
-\Phi(q_{ij},\ p,\ C,\ C_{cav}) = \left\{
+\Phi(q_{ij},\ p) = \left\{
 \begin{aligned}
-&\frac{p^{\left(1+\frac{1}{\gamma}\right)}q_{ij}}{C_{cav}},  & 0 < p \leqslant p_{\text{Атм.}}\ \text{и} \ q_{ij} < 0, \\
+&\frac{p^{\left(1+\frac{1}{\gamma}\right)}q_{ij}}{C_{cav}},  & 
+\begin{aligned}
+0 < p \leqslant p_{\text{Атм.}}\ \\ 
+\text{и} \ q_{ij} < 0
+\end{aligned}, \\
 & \frac{-q_{ij}}{C}, & \text{иначе}
 \end{aligned}
 \right.
 $
 
+\subsubsection{Константы}
+
+\begin{easylist}
+\ListProperties(Hang1=true, Start1=1)
+@ $ E_s = \rho (\rho_{swd})^2 \approx 1260000 $ --- модуль жесткости воды.
+@ $ C = \frac{V}{E_s} $ --- жесткость воды.
+@ $ C_{cav} = 10^{\frac5\gamma}\frac{V}{\gamma} $ --- жесткость воды при кавитации.
+@ $ \gamma = 1.4 $ 
+@ $ p_{\text{Атм.}} = 10^5 $ --- атмосферное давление.
+\end{easylist}
+
 \subsection{Схема работы местного сопротивления}
+
+\begin{center}
+\noindent
+\begin{tikzpicture}
+	\node at (0, 0) [rectangle, minimum size=6mm, rounded corners=3mm, draw, label=90:$q$] (MC) {MC};
+	\node at (-1.5, 0) [rectangle, minimum size=6mm, draw, label=90:$p_i$] (TP1) {};
+	\node at (1.5, 0) [rectangle, minimum size=6mm, draw, label=90:$p_j$] (TP2) {};
+	\draw [->] (TP1) -- (MC);
+	\draw [->] (MC) -- (TP2);
+\end{tikzpicture}
+\end{center}
 
 Справа и слева от местного сопротивления есть давление $p_i$ и $p_j$ соответственно, расход от местного сопротивления $q$ вычисляется по следующим формулам:
 
@@ -193,26 +220,123 @@ $
 
 $ G(dp,\ q) = B\sqrt{|dp|}\left(F\sqrt{\left|\frac{dp}{\xi}\right|}^3\sign(dp) - q\right) $
 
+\subsubsection{Константы}
+
+\begin{easylist}
+\ListProperties(Hang1=true, Start1=1)
+@ $ \mathrm{Nu} = \left\{
+\begin{aligned}
+& 10^{-6},  &\text{вода} \\
+& 3.5 \cdot 10^{-5}, &\text{масло}
+\end{aligned}
+\right. $ - число Нуссельта
+@ $ \rho = \left\{
+\begin{aligned}
+& 997 \frac{\text{кг}}{\text{м}^3},  &\text{вода} \\
+& 905 \frac{\text{кг}}{\text{м}^3}, &\text{масло}
+\end{aligned}
+\right. $ - плотность жидкости
+@ $ \text{\ae} = 1.75 $
+@ $ Re^{crt} = 321 $ - число Рейнольдса.
+@ $ Re^{mult} = \frac{dH}{\mathrm{Nu} \cdot S} $ - число Рейнольдса.
+@ $ r = \frac{12g\nu l}{(dH)^2 S} $
+@ $ r_\text{\ae} = \frac{0.1582 g \nu^{0.25} l}{(dH)^{1.35} S^{1.75}} $
+@ $ B = \frac{1}{l\sqrt{2\rho}} $
+@ $ F = S\sqrt{2\rho} $
+@ $ \xi = 0.5 \cdot 0.035 \cdot 2 \cdot \left(\frac{1}{\mathrm{eps}(1)} - 1\right)^2 = 0.0192 $
+@ $ \mathrm{eps}(x) = 0.57 + 0.043(1.1 - x) $
+@ $ d \approx 2 \text{см} $
+@ $ dH = \frac{4S}{\pi d} $
+\end{easylist}
+
 \subsection{Простейшая схема из трубопровода и местного сопротивления}
 
-$ q_1 = 0.001 $ - расход насоса.
+\textit{Описание схемы:} вода подается из насоса и сливается, проходя через трубопровод.
+
+\renewcommand{\arraystretch}{1.6}
+\setlength{\tabcolsep}{0.5em}
+\begin{tabu}{XX}
+\hline
+\textit{Рисунок:}
+\begin{tikzpicture}[baseline=-2]
+	\node at (0, 0) [rectangle, minimum size=6mm, draw, label=90:$p_1$] (TP) {TP};
+	\node at (-1.5, 0.6) {$q_1=10^{-3}$};
+	\node at (-1.5, 0) [
+		rectangle, 
+		minimum size=6mm, 
+		rounded corners=3mm, 
+		draw, 
+		path picture={
+			\draw[black] (path picture bounding box.east) -- 
+					    (path picture bounding box.center)
+					    (path picture bounding box.south) -- 
+					    (path picture bounding box.north);
+		}] (MC1) {};
+	\node at (1.5, 0) [rectangle, minimum size=6mm, rounded corners=3mm, draw, label=90:$q_2$] (MC2) {MC};
+	\draw [->] (MC1) -- (TP);
+	\draw [->] (TP) -- (MC2);
+	\draw [->] (MC2) -- (1.5, -0.75);
+	\draw [-] (1, -0.7) -- (1, -0.9) -- (2, -0.9) -- (2, -0.7);
+	\node at (1.5, -1.2) {$p_2=10^5$};
+\end{tikzpicture}
+
+&
+
+\textit{Обозначения:}
+
+$ q_1 $ - расход насоса.
 
 $ p_1(t) $ - давление внутри трубы.
 
 $ q_2(t) $ - расход на местном сопротивлении.
 
-$ p_2 = 10^5 $ - атмосферное давление, слив.
+$ p_2 $ - атмосферное давление слива.
+
+\\[1.25ex] \hline
+
+\textit{Система ОДУ:}
 
 $ \left\{\begin{aligned}
-& p_1' = \Phi(q_1 - q_2,\ p_1,\ C,\ C_{cav}) \\
+& p_1' = \Phi(q_1 - q_2,\ p_1) \\
 & q_2' = G(p_1-p_2-P_\alpha(q_2),\ q_2)
 \end{aligned}\right. $
 
+&
+
 \textit{Начальные условия:}
 
-$ p_1(0) = p_2 $
+$ \left\{\begin{aligned}
+& p_1(0) = p_2 \\
+& q_2(0) = 0
+\end{aligned}\right. $
 
-$ q_2(0) = 0 $
+\\[1.25ex] \hline
+
+\noindent\begin{tikzpicture}
+\begin{axis}[
+  align=center,
+  title={График давления в трубе $p_1$: \\ (смещено на $-10^5$ по вертикали)},
+  xlabel=Time,
+  width=0.46\textwidth, height=6cm]
+\addplot[blue, no markers] table [y=p, x=t]{simple.dat};
+\legend{$p_1$}
+\end{axis}
+\end{tikzpicture}
+
+&
+
+\noindent\begin{tikzpicture}
+\begin{axis}[
+  title={График расхода $q_2$:}, 
+  xlabel=Time,
+  width=0.46\textwidth, height=6cm]
+\addplot[blue, no markers] table [y=q, x=t]{simple.dat};
+\legend{$q_2$}
+\end{axis}
+\end{tikzpicture}
+
+\\ \hline
+\end{tabu}
 
 \subsection{Метод работы перегородки}
 
@@ -230,51 +354,5 @@ $ x^k < x_\text{окр.} \wedge x^{k+1} > x_\text{окр.} $
 @ Остановиться, когда подходим на расстояние $\Delta\delta = 10^{-6} \text{м}$, тогда $x = x_{\text{окр.}}$, $v = 0$.
 \end{easylist}
 
-
-\subsection{Основные формулы:}
-
-\subsection{Константы:}
-
-\noindent\begin{easylist}
-\ListProperties(Hang1=true, Start1=1)
-@ $ \mathrm{Nu} = \left\{
-\begin{aligned}
-& 10^{-6},  &\text{вода} \\
-& 3.5 \cdot 10^{-5}, &\text{масло}
-\end{aligned}
-\right. $ - число Нуссельта
-@ $ \gamma = 1.4 $
-@ $ \rho = \left\{
-\begin{aligned}
-& 997 \frac{\text{кг}}{\text{м}^3},  &\text{вода} \\
-& 905 \frac{\text{кг}}{\text{м}^3}, &\text{масло}
-\end{aligned}
-\right. $ - плотность жидкости
-@ $ E_s = \rho (\rho_{swd})^2 \approx 1260000 $ - модуль жесткости воды.
-@ $ C = \frac{V}{E_s} $
-@ $ C_{cav} = 10^{\frac5\gamma}\frac{V}{\gamma} $
-@ $ d \approx 2 \text{см} $
-@ $ \text{\ae} = 1.75 $
-@ $ Re^{crt} = 321 $ - число Рейнольдса
-@ $ Re^{mult} = \frac{dH}{\mathrm{Nu} \cdot S} $ - число Рейнольдса
-@ $ dH = \frac{4S}{\pi d} $
-@ $ B = \frac{1}{l\sqrt{2\rho}} $
-@ $ F = S\sqrt{2\rho} $
-@ $ \xi = 0.5 \cdot 0.035 \cdot 2 \cdot \left(\frac{1}{\mathrm{eps}(1)} - 1\right)^2 = 0.0192 $
-@ $ \mathrm{eps}(x) = 0.57 + 0.043(1.1 - x) $
-@ $ r = \frac{12g\nu l}{(dH)^2 S} $
-@ $ r_\text{\ae} = \frac{0.1582 g \nu^{0.25} l}{(dH)^{1.35} S^{1.75}} $
-\end{easylist}
-
-
-\subsection{Обозначения:}
-
-\noindent\begin{easylist}
-\ListProperties(Hang1=true, Start1=1)
-@ $ V $ - объем камеры. 
-@ $ S $ - площадь сечения местного сопротивления.
-@ $ C $ - жесткость воды.
-@ $ C_{cav} $ - жесткость воды при кавитации.
-\end{easylist}
 
 \end{document}

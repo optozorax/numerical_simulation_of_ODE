@@ -34,18 +34,24 @@ inline double G(double dp, double q) {
 
 //-----------------------------------------------------------------------------
 template<class T>
-void print_data(std::string file_name, const std::vector<T>& data, int write_count, bool is_for_latex = false, const std::vector<std::string>& latex_str = {}) {
+void print_data(std::string file_name, const std::vector<T>& data, int write_count, bool is_for_latex = false, const std::vector<std::string>& latex_str = {}, double a = 0, double b = 0) {
 	std::ofstream fout(file_name);
 	if (is_for_latex) {
+		fout << "t\t";
 		for (auto& i : latex_str)
 			fout << i << "\t";
 		fout << std::endl;
 	}
 	fout << std::setprecision(16);
+	double mul = (b - a) / write_count;
 	int count = 0;
 	for (auto& i : data) {
-		if (count % (data.size()/write_count) == 0)
-			fout << i << std::endl;
+		if (count % (data.size()/write_count) == 0) {
+			if (is_for_latex)
+				fout << (a + count*mul) << "\t" << i << std::endl;
+			else
+				fout << i << std::endl;
+		}
 		count++;
 	}
 	fout.close();

@@ -24,10 +24,13 @@ int main() {
 	start[0] = 100000;
 	start[1] = 0;
 	double a = 0;
-	double b = 0.0001;
+	double b = 0.0002;
 	double n = 1000000;
 	double h = (b - a) / n;
 	auto result = solveDE_Runge_Kutta4<vec>(a, b, h, start, f);
 
-	print_data("res.dat", result, 1000);	
+	//print_data("simple.dat", result, 1000);
+
+	for (auto& i : result) i[0] -= P_atm;
+	print_data("simple.dat", result, 1000, true, {"p", "q"}, a, b);
 }
